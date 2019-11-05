@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Hamsa</string>
+    <string name="login_text">Login</string>
+    <string name="title_activity_landing">LandingActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="logout">Logout</string>
+    <string name="product_heading">Product And Nature of Problem</string>
+    <string name="equipment_type">Equipment Type</string>
+    <string name="make">Make:</string>
+    <string name="Model">Model</string>
+    <string name="service_details">Service Details</string>
+    <string name="defects">Defects</string>
+    <string name="eng_remarks">Engineer\'s Remarks</string>
+    <string name="status_after_service">Status After Service</string>
+    <string name="estimate">Estimation</string>
+    <string name="total">Total</string>
+    <string name="Complete">Complete</string>
+    <string name="InComplete">Incomplete</string>
+    <string name="pendingforspare">Pending for spare</string>
+    <string name="under_obs">Under Observation</string>
+    <string name="soln_provided">Working Solution Provided</string>
+    <string name="enter_defects">Enter Defects</string>
+    <string name="engr_remarks">Enter Remarks</string>
+</resources>

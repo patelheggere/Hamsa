@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "850610100641",
+    "firebase_url": "https://hamsaenviro-92325.firebaseio.com",
+    "project_id": "hamsaenviro-92325",
+    "storage_bucket": "hamsaenviro-92325.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:850610100641:android:ad6d6b2b5608b796aa13e0",
+        "android_client_info": {
+          "package_name": "com.patelheggere.hamsa.executive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "850610100641-qvhd3io15uk9l5ilrc625dg8adgflq80.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.patelheggere.hamsa.executive",
+            "certificate_hash": "31f193b39e94e6b1d609010f4fe9be4db314c4a9"
+          }
+        },
+        {
+          "client_id": "850610100641-gr4jp1ioec2abfo0u4j20a2ggcuoaeik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZhLyo9D09c1OjRw97xaNKz9_dkMrmxBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "850610100641-gr4jp1ioec2abfo0u4j20a2ggcuoaeik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
