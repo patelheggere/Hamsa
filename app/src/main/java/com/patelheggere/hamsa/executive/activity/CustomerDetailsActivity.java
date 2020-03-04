@@ -323,7 +323,7 @@ public class CustomerDetailsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<List<ProductDetails>> call, Throwable t) {
-
+                Log.d(TAG, "onFailure: ");
             }
         });
     }
