@@ -2,14 +2,14 @@ package com.patelheggere.hamsa.executive.model;
 
 public class ProductsOnlyModel {
     private String name;
-    private String pid;
+    private String id;
 
     public ProductsOnlyModel() {
     }
 
     public ProductsOnlyModel(String name, String pid) {
         this.name = name;
-        this.pid = pid;
+        this.id = pid;
     }
 
     public String getName() {
@@ -21,10 +21,10 @@ public class ProductsOnlyModel {
     }
 
     public String getPid() {
-        return pid;
+        return id;
     }
 
     public void setPid(String pid) {
-        this.pid = pid;
+        this.id = pid;
     }
 }

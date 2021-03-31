@@ -18,6 +18,7 @@ public class CSRModel {
     private String ExecID;
     private long dateTimel;
     private String taskID;
+    private String productGroup;
 
     public CSRModel() {
     }
@@ -175,5 +176,13 @@ public class CSRModel {
 
     public void setTaskID(String taskID) {
         this.taskID = taskID;
+    }
+
+    public String getProductGroup() {
+        return productGroup;
+    }
+
+    public void setProductGroup(String productGroup) {
+        this.productGroup = productGroup;
     }
 }

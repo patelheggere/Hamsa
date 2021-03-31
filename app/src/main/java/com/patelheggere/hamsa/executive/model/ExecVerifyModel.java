@@ -4,6 +4,7 @@ public class ExecVerifyModel {
     private String name;
     private String id;
     private String phone;
+    private String type;
     private boolean status;
 
     public ExecVerifyModel() {
@@ -46,5 +47,13 @@ public class ExecVerifyModel {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

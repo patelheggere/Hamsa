@@ -37,7 +37,8 @@ public class MainActivity extends BaseActivity {
         setUpNetwork();
         String id = SharedPrefsHelper.getInstance().get("ID", null);
         if(id!=null) {
-            Call<List<AssignedTasksModel>> assignedTasksModelCall = apiInterface.getTaskAssignedToExe(id);
+            String type = SharedPrefsHelper.getInstance().get("TYPE");
+            Call<List<AssignedTasksModel>> assignedTasksModelCall = apiInterface.getTaskAssignedToExe(id, type);
             assignedTasksModelCall.enqueue(new Callback<List<AssignedTasksModel>>() {
                 @Override
                 public void onResponse(Call<List<AssignedTasksModel>> call, Response<List<AssignedTasksModel>> response) {

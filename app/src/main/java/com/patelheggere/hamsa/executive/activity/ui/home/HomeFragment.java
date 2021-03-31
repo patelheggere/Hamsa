@@ -83,7 +83,8 @@ public class HomeFragment extends Fragment {
         if(id!=null)
         {
             mProgressBar.setVisibility(View.VISIBLE);
-            Call<List<AssignedTasksModel>> assignedTasksModelCall = apiInterface.getTaskAssignedToExe(id);
+            String type = SharedPrefsHelper.getInstance().get("TYPE");
+            Call<List<AssignedTasksModel>> assignedTasksModelCall = apiInterface.getTaskAssignedToExe(id, type);
             assignedTasksModelCall.enqueue(new Callback<List<AssignedTasksModel>>()
             {
                 @Override

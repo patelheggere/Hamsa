@@ -2,5 +2,6 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">kusavinibalaga.org</domain>
+        <domain includeSubdomains="true">egeotech.com</domain>
     </domain-config>
 </network-security-config>

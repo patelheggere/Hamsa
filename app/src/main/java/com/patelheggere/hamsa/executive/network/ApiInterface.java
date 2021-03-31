@@ -43,22 +43,33 @@ public interface ApiInterface {
   //  Call<BeneficiaryModel> getByMobile(@Query("mobile") String mobile);
 
     @GET("getTaskByExeId.php")
-    Call<List<AssignedTasksModel>> getTaskAssignedToExe(@Query("id") String id);
+    Call<List<AssignedTasksModel>> getTaskAssignedToExe(@Query("id") String id, @Query("type") String type);
 
     @GET("VerifyUser.php")
     Call<ExecVerifyModel> verifyUser(@Query("uname") String uname, @Query("pwd") String pwd);
 
-    @GET("getAllProducts.php")
+    @GET("GetProductGrp.php")
     Call<List<ProductsOnlyModel>> getAllProducts(@Query("name") String name);
+
+    @GET("GetProductsByGrpID.php")
+    Call<List<ProductsOnlyModel>> getAllProductsById(@Query("gid") String gid);
+
 
     @GET("getProductDetails.php")
     Call<List<ProductDetails>> getProductDetails(@Query("pid") String name);
 
+    @GET("GetEquipmentList.php")
+    Call<List<ProductsOnlyModel>> getEqip(@Query("pid") String name);
+
+    @GET("GetMakeList.php")
+    Call<List<ProductsOnlyModel>> getMakeList(@Query("pid") String pid, @Query("eqid") String eqid );
     @POST("updateCSR.php")
     Call<CSRResponseModel> updateCSR(@Body CSRModel csrModel);
 
     @GET("http://stage-central.oustme.com/rest/services/course/getAdaptiveCourseData/3007")
     Call<Object> getData(@Header("org-id") String orgId);
+
+
 
    // @GET("beneficiary/getByEPIC.php")
    // Call<BeneficiaryModel> getByEPIC(@Query("epic") String epic);

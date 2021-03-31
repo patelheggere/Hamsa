@@ -45,24 +45,28 @@ public class CustomerDetailsActivity extends BaseActivity {
     private AssignedTasksModel mAssignedTasksModel;
     private ActionBar mActionBar;
     private TextView mTextViewName, mTextViewPhone, mTextViewAdds, mTextViewId, mTextViewType, mTextViewStatus, mTextViewDetails, mTextViewTotal;
-    private Spinner spinnerProduct, spinnerEquipmentType, spinnerMake, spinnerModel;
-    private EditText mEditTextDefects, mEditTextRemarks, mEditTextEstimation;
+    private Spinner spinnerProduct, spinnerProductGrp, spinnerEquipmentType, spinnerMake, spinnerModel;
+    private EditText mEditTextDefects, mEditTextRemarks, mEditTextEstimation, editTextModel, editTextMake;
     private Button CSRSubmitButton;
     private RadioGroup mRadioGroupStatus;
     private CSRModel mCSRModel;
     private RadioButton mRadioButtonComplete, mRadioButtonIncomplete, mRadioButtonPending, mRadioButtonObservation, mRadioButtonSolnProvided;
     private String product, equipmentType, make, model;
     private List<ProductModel> mProductList;
-    private List<ProductsOnlyModel> mOnlyProducts;
+    private List<ProductsOnlyModel> ProductsList, MakeList, EquipList;
+    private List<ProductsOnlyModel> ProductGroup;
+
     private List<String> mMakeList;
     private List<String> mModelList;
     private List<String> mEType;
 
     private ApiInterface apiInterface;
-    private List<String> pnames;
+    private List<String> pnames, makeNames, productNames, EquipName;
     private RadioButton radioStatusButton;
     private ProgressBar mProgressBar;
-
+    private String productGrp;
+    private String productId;
+    private String eqid;
 
 
     @Override
@@ -81,10 +85,13 @@ public class CustomerDetailsActivity extends BaseActivity {
         mTextViewType = findViewById(R.id.text_service_type);
 
         mTextViewTotal = findViewById(R.id.textViewTotalValue);
+        spinnerProductGrp = findViewById(R.id.spinner_product_grp);
         spinnerProduct = findViewById(R.id.spinner_product);
         spinnerEquipmentType = findViewById(R.id.spinner_equipment_type);
         spinnerMake = findViewById(R.id.spinner_make);
-        spinnerModel = findViewById(R.id.spinner_model);
+
+        editTextModel = findViewById(R.id.et_model);
+        editTextMake = findViewById(R.id.editText_make);
 
         mEditTextDefects = findViewById(R.id.editText_defects);
         mEditTextEstimation = findViewById(R.id.editText_estimation);
@@ -146,10 +153,12 @@ public class CustomerDetailsActivity extends BaseActivity {
                 mCSRModel.setProduct(product);
                 mCSRModel.setEquipmentType(equipmentType);
                 mCSRModel.setMake(make);
-                mCSRModel.setModel(model);
+                mCSRModel.setModel(editTextModel.getText().toString());
+                mCSRModel.setMake(editTextMake.getText().toString());
                 mCSRModel.setDateTimel(System.currentTimeMillis());
                 mCSRModel.setTaskID(mAssignedTasksModel.getTask_id());
                 mCSRModel.setTotal(mEditTextEstimation.getText().toString());
+                mCSRModel.setProductGroup(productGrp);
 
                 int selectedId = mRadioGroupStatus.getCheckedRadioButtonId();
                 // find the radiobutton by returned id
@@ -183,11 +192,25 @@ public class CustomerDetailsActivity extends BaseActivity {
             }
         });
 
+        spinnerProductGrp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                productGrp = ProductGroup.get(position).getName();
+                getAllProductsByGrpId(ProductGroup.get(position).getPid());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         spinnerProduct.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                product = mOnlyProducts.get(position).getName();
-                getProductDetails(mOnlyProducts.get(position).getPid());
+                product = ProductsList.get(position).getName();
+                productId =ProductsList.get(position).getPid();
+                getEquipList(ProductsList.get(position).getPid());
             }
 
             @Override
@@ -196,22 +219,11 @@ public class CustomerDetailsActivity extends BaseActivity {
             }
         });
 
-        spinnerModel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                model = modelList.get(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         spinnerMake.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                make = makeList.get(position);
+                make = MakeList.get(position).getName();
             }
 
             @Override
@@ -223,7 +235,9 @@ public class CustomerDetailsActivity extends BaseActivity {
         spinnerEquipmentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                equipmentType = mEqList.get(position);
+                equipmentType = EquipList.get(position).getName();
+                eqid = EquipList.get(position).getPid();
+                getMakeList(productId, eqid);
             }
 
             @Override
@@ -270,6 +284,7 @@ public class CustomerDetailsActivity extends BaseActivity {
     List<String> makeList = new ArrayList<>();
     List<String> modelList = new ArrayList<>();
     List<String> mEqList = new ArrayList<>();
+    
 
     private void getProductDetails(String id)
     {
@@ -278,46 +293,46 @@ public class CustomerDetailsActivity extends BaseActivity {
             @Override
             public void onResponse(Call<List<ProductDetails>> call, Response<List<ProductDetails>> response) {
                 if(response.isSuccessful()){
-                  makeMap = new HashMap<>();
-                  modelMap = new HashMap<>();
-                  eqMap = new HashMap<>();
-                  if(response.body().size()>0) {
-                      for (int i = 0; i < response.body().size(); i++) {
-                          makeMap.put(response.body().get(i).getMakename(), response.body().get(i).getMakename());
-                          modelMap.put(response.body().get(i).getModelname(), response.body().get(i).getModelname());
-                          eqMap.put(response.body().get(i).getName(), response.body().get(i).getName());
-                      }
+                    makeMap = new HashMap<>();
+                    modelMap = new HashMap<>();
+                    eqMap = new HashMap<>();
+                    if(response.body().size()>0) {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            makeMap.put(response.body().get(i).getMakename(), response.body().get(i).getMakename());
+                            modelMap.put(response.body().get(i).getModelname(), response.body().get(i).getModelname());
+                            eqMap.put(response.body().get(i).getName(), response.body().get(i).getName());
+                        }
 
 
-                      for (Map.Entry<String,String> entry : makeMap.entrySet()){
-                          makeList.add(entry.getValue());
-                      }
+                        for (Map.Entry<String,String> entry : makeMap.entrySet()){
+                            makeList.add(entry.getValue());
+                        }
 
-                      for (Map.Entry<String,String> entry : modelMap.entrySet()){
-                          modelList.add(entry.getValue());
-                      }
+                        for (Map.Entry<String,String> entry : modelMap.entrySet()){
+                            modelList.add(entry.getValue());
+                        }
 
-                      for (Map.Entry<String,String> entry : eqMap.entrySet()){
-                          mEqList.add(entry.getValue());
-                      }
+                        for (Map.Entry<String,String> entry : eqMap.entrySet()){
+                            mEqList.add(entry.getValue());
+                        }
 
-                      try {
-                          ArrayAdapter aa = new ArrayAdapter(CustomerDetailsActivity.this, android.R.layout.simple_spinner_item, makeList);
-                          aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                          spinnerMake.setAdapter(aa);
+                        try {
+                            ArrayAdapter aa = new ArrayAdapter(CustomerDetailsActivity.this, android.R.layout.simple_spinner_item, makeList);
+                            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerMake.setAdapter(aa);
 
 
-                          ArrayAdapter aa2 = new ArrayAdapter(CustomerDetailsActivity.this, android.R.layout.simple_spinner_item, modelList);
-                          aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                          spinnerModel.setAdapter(aa2);
+                            ArrayAdapter aa2 = new ArrayAdapter(CustomerDetailsActivity.this, android.R.layout.simple_spinner_item, modelList);
+                            aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerModel.setAdapter(aa2);
 
-                          ArrayAdapter aa3 = new ArrayAdapter(CustomerDetailsActivity.this, android.R.layout.simple_spinner_item, mEqList);
-                          aa3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                          spinnerEquipmentType.setAdapter(aa3);
-                      } catch (Exception e) {
-                          e.printStackTrace();
-                      }
-                  }
+                            ArrayAdapter aa3 = new ArrayAdapter(CustomerDetailsActivity.this, android.R.layout.simple_spinner_item, mEqList);
+                            aa3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerEquipmentType.setAdapter(aa3);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
 
@@ -328,20 +343,20 @@ public class CustomerDetailsActivity extends BaseActivity {
         });
     }
 
-    private void getAllProducts()
+    private void getAllProductsByGrpId(String id)
     {
-       Call<List<ProductsOnlyModel>> listCall = apiInterface.getAllProducts("name");
+       Call<List<ProductsOnlyModel>> listCall = apiInterface.getAllProductsById(id);
        listCall.enqueue(new Callback<List<ProductsOnlyModel>>() {
            @Override
            public void onResponse(Call<List<ProductsOnlyModel>> call, Response<List<ProductsOnlyModel>> response) {
                if(response.isSuccessful())
                {
                    pnames = new ArrayList<>();
-                   mOnlyProducts = response.body();
-                   if(mOnlyProducts!=null)
-                       for(int i = 0; i<mOnlyProducts.size(); i++)
+                   ProductsList = response.body();
+                   if(ProductsList!=null)
+                       for(int i = 0; i<ProductsList.size(); i++)
                        {
-                           pnames.add(mOnlyProducts.get(i).getName());
+                           pnames.add(ProductsList.get(i).getName());
                        }
                    ArrayAdapter aa = new ArrayAdapter(CustomerDetailsActivity.this, android.R.layout.simple_spinner_item, pnames);
                    aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -356,5 +371,87 @@ public class CustomerDetailsActivity extends BaseActivity {
        });
     }
 
+    private void getAllProducts()
+    {
+        Call<List<ProductsOnlyModel>> listCall = apiInterface.getAllProducts("");
+        listCall.enqueue(new Callback<List<ProductsOnlyModel>>() {
+            @Override
+            public void onResponse(Call<List<ProductsOnlyModel>> call, Response<List<ProductsOnlyModel>> response) {
+                if(response.isSuccessful())
+                {
+                    productNames = new ArrayList<>();
+                    ProductGroup = response.body();
+                    if(ProductGroup!=null)
+                        for(int i = 0; i<ProductGroup.size(); i++)
+                        {
+                            productNames.add(ProductGroup.get(i).getName());
+                        }
+                    ArrayAdapter aa = new ArrayAdapter(CustomerDetailsActivity.this, android.R.layout.simple_spinner_item, productNames);
+                    aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerProductGrp.setAdapter(aa);
+                }
+            }
 
+            @Override
+            public void onFailure(Call<List<ProductsOnlyModel>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void getEquipList(String id)
+    {
+        Call<List<ProductsOnlyModel>> listCall = apiInterface.getEqip(id);
+        listCall.enqueue(new Callback<List<ProductsOnlyModel>>() {
+            @Override
+            public void onResponse(Call<List<ProductsOnlyModel>> call, Response<List<ProductsOnlyModel>> response) {
+                if(response.isSuccessful())
+                {
+                    EquipName = new ArrayList<>();
+                    EquipList = response.body();
+                    if(EquipList!=null)
+                        for(int i = 0; i<EquipList.size(); i++)
+                        {
+                            EquipName.add(EquipList.get(i).getName());
+                        }
+                    ArrayAdapter aa = new ArrayAdapter(CustomerDetailsActivity.this, android.R.layout.simple_spinner_item, EquipName);
+                    aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerEquipmentType.setAdapter(aa);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductsOnlyModel>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void getMakeList(String pid, String eqid)
+    {
+        Call<List<ProductsOnlyModel>> listCall = apiInterface.getMakeList(pid, eqid);
+        listCall.enqueue(new Callback<List<ProductsOnlyModel>>() {
+            @Override
+            public void onResponse(Call<List<ProductsOnlyModel>> call, Response<List<ProductsOnlyModel>> response) {
+                if(response.isSuccessful())
+                {
+                    makeNames = new ArrayList<>();
+                    MakeList = response.body();
+                    if(MakeList!=null)
+                        for(int i = 0; i<MakeList.size(); i++)
+                        {
+                            makeNames.add(MakeList.get(i).getName());
+                        }
+                    ArrayAdapter aa = new ArrayAdapter(CustomerDetailsActivity.this, android.R.layout.simple_spinner_item, makeNames);
+                    aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerMake.setAdapter(aa);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductsOnlyModel>> call, Throwable t) {
+
+            }
+        });
+    }
 }

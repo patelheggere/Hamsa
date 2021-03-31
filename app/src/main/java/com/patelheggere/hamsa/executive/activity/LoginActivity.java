@@ -40,6 +40,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+
         mMaterialButtonLogin = findViewById(R.id.loginButton);
         mEditTextUsername = findViewById(R.id.editTextUserName);
         mEditTextPassword = findViewById(R.id.editTextPassword);
@@ -99,6 +100,7 @@ public class LoginActivity extends BaseActivity {
                         SharedPrefsHelper.getInstance().save("NAME", response.body().getName());
                         SharedPrefsHelper.getInstance().save("ID", response.body().getId());
                         SharedPrefsHelper.getInstance().save("PHONE", response.body().getPhone());
+                        SharedPrefsHelper.getInstance().save("TYPE", response.body().getType());
                         SharedPrefsHelper.getInstance().save("IS_LOGGED_IN", false);
                         startActivity(new Intent(LoginActivity.this, LandingActivity.class));
                         finish();
